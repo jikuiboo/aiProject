@@ -17,7 +17,7 @@ def load_CIFAR10(ROOT):
   """ load all of cifar """
   xs = []
   ys = []
-  for b in range(1, 2):
+  for b in range(1, 6):
     f = os.path.join(ROOT, 'data_batch_%d' % (b, ))
     X, Y = load_CIFAR_batch(f)
     xs.append(X)
@@ -29,7 +29,7 @@ def load_CIFAR10(ROOT):
   return Xtr, Ytr, Xte, Yte
 
 
-def get_CIFAR10_data(num_training=5000, num_validation=500, num_test=500):
+def get_CIFAR10_data(num_training=40000, num_validation=5000, num_test=5000):
     """
     Load the CIFAR-10 dataset from disk and perform preprocessing to prepare
     it for classifiers. These are the same steps as we used for the SVM, but
