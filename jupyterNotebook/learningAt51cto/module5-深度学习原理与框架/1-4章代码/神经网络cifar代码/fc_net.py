@@ -20,9 +20,11 @@ class TwoLayerNet(object):
         self.params = {}    
         self.reg = reg   
         self.params['W1'] = weight_scale * np.random.randn(input_dim, hidden_dim)     
-        self.params['b1'] = np.zeros((1, hidden_dim))    
-        self.params['W2'] = weight_scale * np.random.randn(hidden_dim, num_classes)  
-        self.params['b2'] = np.zeros((1, num_classes))
+        self.params['b1'] = np.zeros((1, hidden_dim))
+        self.params['W2'] = weight_scale * np.random.randn(hidden_dim, hidden_dim)
+        self.params['b2'] = np.zeros((1, hidden_dim))
+        self.params['W3'] = weight_scale * np.random.randn(hidden_dim, num_classes)
+        self.params['b3'] = np.zeros((1, num_classes))
 
     def loss(self, X, y=None):    
         """   
@@ -45,8 +47,10 @@ class TwoLayerNet(object):
         # Unpack variables from the params dictionary
         W1, b1 = self.params['W1'], self.params['b1']
         W2, b2 = self.params['W2'], self.params['b2']
+        W3, b3 = self.params['W3'], self.params['b3']
         h1, cache1 = affine_relu_forward(X, W1, b1)
-        out, cache2 = affine_forward(h1, W2, b2)
+        h2, cache2 = affine_relu_forward(h1, W2, b2)
+        out, cache3 = affine_forward(h2, W3, b3)
         scores = out              # (N,C)
         # If y is None then we are in test mode so just return scores
         if y is None:   
@@ -54,18 +58,25 @@ class TwoLayerNet(object):
 
         loss, grads = 0, {}
         data_loss, dscores = softmax_loss(scores, y)
-        reg_loss = 0.5 * self.reg * np.sum(W1*W1) + 0.5 * self.reg * np.sum(W2*W2)
+        reg_loss = 0.5 * self.reg * np.sum(W1*W1) + 0.5 * self.reg * np.sum(W2*W2) + 0.5 * self.reg * np.sum(W3*W3)
         loss = data_loss + reg_loss
 
         # Backward pass: compute gradients
-        dh1, dW2, db2 = affine_backward(dscores, cache2)
-        dX, dW1, db1 = affine_relu_backward(dh1, cache1)
+        # dh1, dW2, db2 = affine_backward(dscores, cache2)
+        # dX, dW1, db1 = affine_relu_backward(dh1, cache1)
+
+        dh3, dW3, db3 = affine_backward(dscores, cache3)
+        dh2, dW2, db2 = affine_relu_backward(dh3, cache2)
+        dX, dW1, db1 = affine_relu_backward(dh2, cache1)
         # Add the regularization gradient contribution
+        dW3 += self.reg * W3
         dW2 += self.reg * W2
         dW1 += self.reg * W1
         grads['W1'] = dW1
         grads['b1'] = db1
         grads['W2'] = dW2
         grads['b2'] = db2
+        grads['W3'] = dW3
+        grads['b3'] = db3
 
         return loss, grads
