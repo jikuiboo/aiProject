@@ -58,6 +58,11 @@ def get_CIFAR10_data(num_training=40000, num_validation=5000, num_test=5000):
     X_test -= mean_image
     
     # Transpose so that channels come first
+    '''
+    transpose()方法，对矩阵进行转化。
+    此处，把1轴换为2轴，2轴换为3轴，3轴换为1轴。可以用debug查看变换前后的shape值。
+    shape从(40000,32,32,3)变为(40000,3,32,32)
+    '''
     X_train = X_train.transpose(0, 3, 1, 2).copy()
     X_val = X_val.transpose(0, 3, 1, 2).copy()
     X_test = X_test.transpose(0, 3, 1, 2).copy()
