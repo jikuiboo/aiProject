@@ -130,16 +130,16 @@ def conv_forward_naive(x, w, b, conv_param):
     stride, pad = conv_param['stride'], conv_param['pad']
     N, C, H, W = x.shape
     F, C, HH, WW = w.shape
-    x_padded = np.pad(x, ((0, 0), (0, 0), (pad, pad), (pad, pad)), mode='constant')
+    x_padded = np.pad(x, ((0, 0), (0, 0), (int(pad), int(pad)), (int(pad), int(pad))), mode='constant')
     H_new = 1 + (H + 2 * pad - HH) / stride
     W_new = 1 + (W + 2 * pad - WW) / stride
     s = stride
-    out = np.zeros((N, F, H_new, W_new))
+    out = np.zeros((N, F, int(H_new), int(W_new)))
 
-    for i in xrange(N):       # ith image    
-        for f in xrange(F):   # fth filter        
-            for j in xrange(H_new):            
-                for k in xrange(W_new):   
+    for i in range(N):       # ith image
+        for f in range(F):   # fth filter
+            for j in range(int(H_new)):
+                for k in range(int(W_new)):
                     #print x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s].shape
                     #print w[f].shape  
                     #print b.shape  
@@ -154,7 +154,7 @@ def conv_forward_naive(x, w, b, conv_param):
 def conv_backward_naive(dout, cache):
     #print '1111'
     x, w, b, conv_param = cache
-    pad = conv_param['pad']
+    pad = int(conv_param['pad'])
     stride = conv_param['stride']
     F, C, HH, WW = w.shape
     N, C, H, W = x.shape
@@ -169,10 +169,10 @@ def conv_backward_naive(dout, cache):
     x_padded = np.pad(x, ((0, 0), (0, 0), (pad, pad), (pad, pad)), 'constant')
     dx_padded = np.pad(dx, ((0, 0), (0, 0), (pad, pad), (pad, pad)), 'constant')
 
-    for i in xrange(N):       # ith image    
-        for f in xrange(F):   # fth filter        
-            for j in xrange(H_new):            
-                for k in xrange(W_new):                
+    for i in range(N):       # ith image
+        for f in range(F):   # fth filter
+            for j in range(int(H_new)):
+                for k in range(int(W_new)):
                     window = x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s]
                     db[f] += dout[i, f, j, k]                
                     dw[f] += window * dout[i, f, j, k]                
@@ -188,11 +188,11 @@ def max_pool_forward_naive(x, pool_param):
     N, C, H, W = x.shape
     H_new = 1 + (H - HH) / s
     W_new = 1 + (W - WW) / s
-    out = np.zeros((N, C, H_new, W_new))
-    for i in xrange(N):    
-        for j in xrange(C):        
-            for k in xrange(H_new):            
-                for l in xrange(W_new):                
+    out = np.zeros((N, C, int(H_new), int(W_new)))
+    for i in range(N):
+        for j in range(C):
+            for k in range(int(H_new)):
+                for l in range(int(W_new)):
                     window = x[i, j, k*s:HH+k*s, l*s:WW+l*s] 
                     out[i, j, k, l] = np.max(window)
 
@@ -209,10 +209,10 @@ def max_pool_backward_naive(dout, cache):
     H_new = 1 + (H - HH) / s
     W_new = 1 + (W - WW) / s
     dx = np.zeros_like(x)
-    for i in xrange(N):    
-        for j in xrange(C):        
-            for k in xrange(H_new):            
-                for l in xrange(W_new):                
+    for i in range(N):
+        for j in range(C):
+            for k in range(int(H_new)):
+                for l in range(int(W_new)):
                     window = x[i, j, k*s:HH+k*s, l*s:WW+l*s]                
                     m = np.max(window)               
                     dx[i, j, k*s:HH+k*s, l*s:WW+l*s] = (window == m) * dout[i, j, k, l]
