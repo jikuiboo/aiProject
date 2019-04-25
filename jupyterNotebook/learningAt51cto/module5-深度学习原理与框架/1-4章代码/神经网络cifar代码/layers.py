@@ -116,11 +116,18 @@ def softmax_loss(x, y):
     """    
     probs = np.exp(x - np.max(x, axis=1, keepdims=True))    
     probs /= np.sum(probs, axis=1, keepdims=True)    
-    N = x.shape[0]   
-    loss = -np.sum(np.log(probs[np.arange(N), y])) / N    
-    dx = probs.copy()    
-    dx[np.arange(N), y] -= 1    
-    dx /= N    
+    N = x.shape[0]
+    # 在所有样本的预测概率矩阵中，取正确类别标签对应的那个概率值；
+    # 对概率值取对数，然后汇总，取得平均损失值
+    loss = -np.sum(np.log(probs[np.arange(N), y])) / N
+    dx = probs.copy()
+    # 在所有样本的预测概率矩阵中，取正确类别标签对应的那个概率值；
+    # 梯度 = 正确类别标签所对应的预测概率值 - 1
+    dx[np.arange(N), y] -= 1
+    # why does dx divide by N? Why?
+    # ∂L_ij/∂z_ij = (S_ij-1)/N
+    # ∂L_ij/∂z_ij = S_il, (l<>j)
+    dx /= N
 
     return loss, dx
 

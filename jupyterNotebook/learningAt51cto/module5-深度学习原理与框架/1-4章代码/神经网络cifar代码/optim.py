@@ -27,7 +27,7 @@ def sgd_momentum(w, dw, config=None):
     config.setdefault('momentum', 0.9)    
     v = config.get('velocity', np.zeros_like(w))    
     next_w = None    
-    v = config['momentum'] * v - config['learning_rate'] * dw    
+    v = config['momentum'] * v - config['learning_rate'] * dw
     next_w = w + v    
     config['velocity'] = v    
 

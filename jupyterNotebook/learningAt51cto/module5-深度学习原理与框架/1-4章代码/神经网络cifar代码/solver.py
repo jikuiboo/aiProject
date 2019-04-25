@@ -145,6 +145,7 @@ class Solver(object):
 
     # Make a deep copy of the optim_config for each parameter
     self.optim_configs = {}
+    # 为模型的每个参数初始化超参数组，目前有w1,b1,w2,b2四个参数
     for p in self.model.params:
       d = {k: v for k, v in self.optim_config.items()}
       self.optim_configs[p] = d
