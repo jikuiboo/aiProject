@@ -221,6 +221,7 @@ class Solver(object):
     Run optimization to train the model.
     """
     num_train = self.X_train.shape[0]
+    # 每轮迭代次数100次；总共要40轮，所以一共迭代4000次
     iterations_per_epoch = max(num_train / self.batch_size, 1)
     num_iterations = self.num_epochs * iterations_per_epoch
 
