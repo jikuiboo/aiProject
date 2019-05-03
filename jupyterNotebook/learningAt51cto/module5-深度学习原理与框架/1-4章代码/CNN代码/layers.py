@@ -140,10 +140,10 @@ def conv_forward_naive(x, w, b, conv_param):
         for f in range(F):   # fth filter
             for j in range(int(H_new)):
                 for k in range(int(W_new)):
-                    #print x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s].shape
-                    #print w[f].shape  
-                    #print b.shape  
-                    #print np.sum((x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s] * w[f]))         
+                    # print(x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s].shape)
+                    # print(w[f].shape)
+                    # print(b.shape)
+                    # print(np.sum((x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s] * w[f])))
                     out[i, f, j, k] = np.sum(x_padded[i, :, j*s:HH+j*s, k*s:WW+k*s] * w[f]) + b[f]
 
     cache = (x, w, b, conv_param)
